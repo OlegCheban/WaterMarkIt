@@ -138,6 +138,23 @@ public class TextBasedWatermarkServiceImpl implements WatermarkService.TextBased
             throw new WatermarkingException("Error watermarking the file", e);
         }
     }
+    
+    public byte[] apply(String filepath) {
+    	try {
+            // Step 1: Call apply() to get the watermarked byte[]
+            byte[] watermarkedData = apply();
+
+            // Step 2: Write the byte[] to the specified file
+            try (FileOutputStream fos = new FileOutputStream(filePath)) {
+                fos.write(watermarkedData);
+                logger.info("Watermarked file saved at: {}", filePath);
+            }
+        } catch (IOException e) {
+            logger.error("Failed to save watermarked file", e);
+            throw new WatermarkingException("Error saving the watermarked file", e);
+        }
+    	
+    }
 
     private WatermarkingMethod defineMethodByFileType(FileType ft){
         switch (ft){
