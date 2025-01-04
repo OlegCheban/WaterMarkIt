@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.Executor;
+import java.util.function.Predicate;
 
 /**
  * @author Oleg Cheban
@@ -89,6 +90,24 @@ public class ImageBasedWatermarkServiceImpl implements WatermarkService.ImageBas
     @Override
     public WatermarkService.ImageBasedWatermarkPositionStepBuilder position(WatermarkPosition position) {
         watermarkAttributes.setPosition(position);
+        return this;
+    }
+
+    @Override
+    public WatermarkService.ImageBasedWatermarkBuilder documentFilter(Predicate<PDDocument> predicate) {
+        watermarkAttributes.setDocumentPredicates(predicate);
+        return this;
+    }
+
+    @Override
+    public WatermarkService.ImageBasedWatermarkBuilder filterPage(Predicate<Integer> predicate) {
+        watermarkAttributes.setPagePredicate(predicate);
+        return this;
+    }
+
+    @Override
+    public WatermarkService.ImageBasedWatermarkBuilder when(boolean condition) {
+        watermarkAttributes.setWatermarkEnabled(condition);
         return this;
     }
 

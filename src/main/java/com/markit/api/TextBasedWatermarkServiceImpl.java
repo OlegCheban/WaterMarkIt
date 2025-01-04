@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.function.Predicate;
 
 /**
  * @author Oleg Cheban
@@ -128,6 +129,24 @@ public class TextBasedWatermarkServiceImpl implements WatermarkService.TextBased
         watermarks.add(currentWatermark);
         currentWatermark = new WatermarkAttributes();
         currentWatermark.setMethod(defineMethodByFileType(fileType));
+        return this;
+    }
+
+    @Override
+    public WatermarkService.TextBasedWatermarkBuilder documentFilter(Predicate<PDDocument> predicate) {
+        currentWatermark.setDocumentPredicates(predicate);
+        return this;
+    }
+
+    @Override
+    public WatermarkService.TextBasedWatermarkBuilder filterPage(Predicate<Integer> predicate) {
+        currentWatermark.setPagePredicate(predicate);
+        return this;
+    }
+
+    @Override
+    public WatermarkService.TextBasedWatermarkBuilder when(boolean condition) {
+        currentWatermark.setWatermarkEnabled(condition);
         return this;
     }
 

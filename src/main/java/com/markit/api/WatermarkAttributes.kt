@@ -1,8 +1,10 @@
 package com.markit.api
 
+import org.apache.pdfbox.pdmodel.PDDocument
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.util.*
+import java.util.function.Predicate
 
 data class WatermarkAttributes (
     var text: String = "",
@@ -15,6 +17,10 @@ data class WatermarkAttributes (
     var method: WatermarkingMethod = WatermarkingMethod.DRAW,
     var position: WatermarkPosition = WatermarkPosition.CENTER,
     var adjustment: WatermarkAdjustment = WatermarkAdjustment(),
-    var image: Optional<BufferedImage> = Optional.empty()
-) {}
+    var image: Optional<BufferedImage> = Optional.empty(),
+    var documentPredicates: Predicate<PDDocument> = Predicate { true },
+    var pagePredicate: Predicate<Int> = Predicate { true },
+    var watermarkEnabled: Boolean = true
+) {
+}
 

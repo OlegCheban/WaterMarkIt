@@ -63,6 +63,7 @@ implementation 'io.github.watermark-lab:WaterMarkIt:1.2.3'
 
 ### Usage
 
+#### Basic Text Watermark
 ```java
 try (var document = new PDDocument()) {
     document.addPage(new PDPage());
@@ -99,6 +100,7 @@ try (var document = new PDDocument()) {
 ```
 ![Screenshot](https://i.imgur.com/ww4gtmbm.png)
 
+#### Applying Watermark to an Existing PDF File
 ```java    
     WatermarkService.textBasedWatermarker()
             .watermark(readFileFromClasspathAsBytes("file.pdf"), FileType.PDF)
@@ -114,6 +116,7 @@ try (var document = new PDDocument()) {
 ```
 ![Screenshot](https://github.com/user-attachments/assets/b07fa51c-dd64-4da7-994c-263968f6d6c6)
 
+#### Image-Based Watermarking
 ```java 
     WatermarkService.imageBasedWatermarker()
             .watermark(readFileFromClasspathAsBytes("file.pdf"), FileType.PDF)
@@ -123,6 +126,29 @@ try (var document = new PDDocument()) {
             .apply()
 ```
 ![Screenshot](https://github.com/user-attachments/assets/be223354-617a-4275-9779-64f246d585d1)
+
+
+#### Applying Watermarks Conditionally
+```java
+// Apply watermark only on pages with index >= 2
+WatermarkService.textBasedWatermarker()
+  .watermark(document)
+  .pageFilter(index -> index >= 2)
+```
+
+```java
+// Apply watermark only if the user is an admin
+WatermarkService.textBasedWatermarker()
+  .watermark(document)
+  .when(isAdmin)
+```
+
+```java
+// Apply watermark only if the document has more than 3 pages
+WatermarkService.textBasedWatermarker()
+  .watermark(document)
+  .documentFilter(document -> document.getNumberOfPages() > 3)
+```
 
 ### Dependencies 
 - **Apache PDFBox**: [Apache PDFBox](https://pdfbox.apache.org/) - A Java library for working with PDF documents.

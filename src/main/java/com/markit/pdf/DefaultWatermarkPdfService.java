@@ -71,6 +71,8 @@ public class DefaultWatermarkPdfService implements WatermarkPdfService {
     private void applyWatermark(PDDocument document, List<WatermarkAttributes> attrs,
                                 WatermarkingMethod method, PdfWatermarkHandler action) throws IOException {
         var filteredAttrs = attrs.stream()
+                .filter(WatermarkAttributes::getWatermarkEnabled)
+                .filter(attr -> attr.getDocumentPredicates().test(document))
                 .filter(attr -> attr.getMethod().equals(method))
                 .collect(Collectors.toList());
         if (!filteredAttrs.isEmpty()) {
@@ -81,7 +83,8 @@ public class DefaultWatermarkPdfService implements WatermarkPdfService {
     private void overlay(PDDocument document, List<WatermarkAttributes> attrs) throws IOException {
         int numberOfPages = document.getNumberOfPages();
         for (int pageIndex = 0; pageIndex < numberOfPages; pageIndex++) {
-            overlayService.get().watermark(document, pageIndex, attrs);
+            List<WatermarkAttributes> filteredAttrs = filterAttrsByPageIndex(attrs, pageIndex);
+            if (!filteredAttrs.isEmpty()) overlayService.get().watermark(document, pageIndex, filteredAttrs);
         }
     }
 
@@ -107,7 +110,8 @@ public class DefaultWatermarkPdfService implements WatermarkPdfService {
                 CompletableFuture.runAsync(
                         () -> {
                             try {
-                                drawService.get().watermark(document, pIndex, attrs);
+                                List<WatermarkAttributes> filteredAttrs = filterAttrsByPageIndex(attrs, pIndex);
+                                if (!filteredAttrs.isEmpty()) drawService.get().watermark(document, pIndex, filteredAttrs);
                             } catch (IOException e) {
                                 logPageException(e, pIndex);
                             }
@@ -123,11 +127,18 @@ public class DefaultWatermarkPdfService implements WatermarkPdfService {
     private void sync(PDDocument document, int numberOfPages, List<WatermarkAttributes> attrs) {
         for (int pageIndex = 0; pageIndex < numberOfPages; pageIndex++) {
             try {
-                drawService.get().watermark(document, pageIndex, attrs);
+                List<WatermarkAttributes> filteredAttrs = filterAttrsByPageIndex(attrs, pageIndex);
+                if (!filteredAttrs.isEmpty()) drawService.get().watermark(document, pageIndex, filteredAttrs);
             } catch (IOException e) {
                 logPageException(e, pageIndex);
             }
         }
+    }
+
+    private static List<WatermarkAttributes> filterAttrsByPageIndex(List<WatermarkAttributes> attrs, int pIndex) {
+        return attrs.stream()
+                .filter(attr -> attr.getPagePredicate().test(pIndex))
+                .collect(Collectors.toList());
     }
 
     private void logPageException(Exception e, int pageIndex){
