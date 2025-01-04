@@ -4,6 +4,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.awt.*;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
@@ -148,6 +149,17 @@ public interface WatermarkService {
          * @return A byte array representing the watermarked file.
          */
         byte[] apply();
+
+        /**
+         * Applies a watermark to the file and returns the result as a file path.
+         * The method generates a watermarked file saved in the specified directory
+         * and file name, and provides the file's path for further processing.
+         *
+         * @param directoryPath The directory path where the watermarked file will be saved.
+         * @param fileName      The name of the watermarked file to be created.
+         * @return The {@link Path} representing the location of the saved watermarked file.
+         */
+        Path apply(String directoryPath, String fileName);
     }
 
     /**
@@ -239,6 +251,17 @@ public interface WatermarkService {
          * @return A byte array representing the watermarked file.
          */
         byte[] apply();
+
+        /**
+         * Applies a watermark to the file and returns the result as a file path.
+         * The method generates a watermarked file saved in the specified directory
+         * and file name, and provides the file's path for further processing.
+         *
+         * @param directoryPath The directory path where the watermarked file will be saved.
+         * @param fileName      The name of the watermarked file to be created.
+         * @return The {@link Path} representing the location of the saved watermarked file.
+         */
+        Path apply(String directoryPath, String fileName);
     }
 
     /**
