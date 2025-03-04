@@ -109,6 +109,13 @@ public abstract class AbstractWatermarkService<Service, WatermarkBuilder, TextBa
         return (PositionStepBuilder) this;
     }
 
+    public PositionStepBuilder position(WatermarkPosition watermarkPosition, int x, int y) {
+        Objects.requireNonNull(watermarkPosition);
+        currentWatermark.setPosition(watermarkPosition);
+        currentWatermark.adjustPosition(x, y);
+        return (PositionStepBuilder) this;
+    }
+
     public PositionStepBuilder verticalSpacing(int spacing) {
         currentWatermark.setVerticalSpacing(spacing);
         return (PositionStepBuilder) this;

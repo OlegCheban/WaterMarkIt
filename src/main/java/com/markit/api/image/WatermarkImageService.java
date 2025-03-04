@@ -1,11 +1,11 @@
 package com.markit.api.image;
 
-import com.markit.api.positioning.WatermarkPosition;
-
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Path;
+
+import com.markit.api.positioning.WatermarkPosition;
 
 /**
  * Watermark Service for applying watermarks to images
@@ -98,6 +98,15 @@ public interface WatermarkImageService {
          * @see WatermarkPosition
          */
         WatermarkPositionStepBuilder position(WatermarkPosition watermarkPosition);
+
+        /**
+         * Defines the position of the watermark on the file directly with x and y coordinates
+         * 
+         * @param watermarkPosition The position to place the watermark (e.g., CENTER, CORNER)
+         * @param x The direct x-axis offset of watermark
+         * @param y The direct y-axis offset of watermark
+         */
+        WatermarkPositionStepBuilder position(WatermarkPosition watermarkPosition, int x, int y);
 
         /**
          * Enables or disables the watermark based on a specific condition
