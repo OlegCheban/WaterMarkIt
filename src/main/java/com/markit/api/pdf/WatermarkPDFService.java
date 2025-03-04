@@ -1,12 +1,13 @@
 package com.markit.api.pdf;
 
-import com.markit.api.positioning.WatermarkPosition;
-import com.markit.api.WatermarkingMethod;
-import org.apache.pdfbox.pdmodel.PDDocument;
-
-import java.awt.*;
+import java.awt.Color;
 import java.nio.file.Path;
 import java.util.function.Predicate;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+
+import com.markit.api.WatermarkingMethod;
+import com.markit.api.positioning.WatermarkPosition;
 
 /**
  * Watermark Service for applying watermarks to PDF files
@@ -94,6 +95,15 @@ public interface WatermarkPDFService {
          * @see WatermarkPosition
          */
         WatermarkPositionStepPDFBuilder position(WatermarkPosition watermarkPosition);
+
+        /**
+         * Defines the position of the watermark on the file directly with x and y coordinates
+         *
+         * @param watermarkPosition The position to place the watermark (e.g., CENTER, CORNER)
+         * @param x The direct x-axis offset of watermark
+         * @param y The direct y-axis offset of watermark
+         */
+        WatermarkPositionStepPDFBuilder position(WatermarkPosition watermarkPosition, int x, int y);
 
         /**
          * Sets the dpi of the watermark
