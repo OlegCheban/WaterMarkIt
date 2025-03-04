@@ -36,7 +36,7 @@ class ImageBasedWatermarkImageBasedWatermarkTest {
                 .withImage(TestFileUtils.readFileFromClasspathAsBytes("logo.png"))
                     .size(25)
                     .position(WatermarkPosition.TILED).end()
-                    .opacity(0.1f)
+                    .opacity(10)
             .apply(TestFileUtils.outputDirectory, "image-test.jpeg")
 
         // Then
@@ -52,7 +52,7 @@ class ImageBasedWatermarkImageBasedWatermarkTest {
                 .watermarkImage(file, ImageType.JPEG)
                 .withImage(TestFileUtils.readFileFromClasspathAsBytes("logo.png")).size(25)
                 .position(WatermarkPosition.TILED).end()
-                .opacity(0.1f)
+                .opacity(10)
                 .apply("./doesnt-exist/", "image-test.jpeg")
         }
     }
@@ -65,7 +65,7 @@ class ImageBasedWatermarkImageBasedWatermarkTest {
                 .watermarkImage(file, ImageType.JPEG)
                 .withImage(TestFileUtils.readFileFromClasspathAsBytes("logo.png")).size(25)
                 .position(WatermarkPosition.TILED).end()
-                .opacity(0.1f)
+                .opacity(10)
                 .apply("not a directory", "image-test.jpeg")
         }
     }
