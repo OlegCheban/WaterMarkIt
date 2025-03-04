@@ -1,11 +1,11 @@
 package com.markit.api.image;
 
-import com.markit.api.positioning.WatermarkPosition;
-
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Path;
+
+import com.markit.api.positioning.WatermarkPosition;
 
 /**
  * Watermark Service for applying watermarks to images
@@ -84,7 +84,7 @@ public interface WatermarkImageService {
         /**
          * Sets the opacity of the watermark
          */
-        WatermarkImageBuilder opacity(float opacity);
+        WatermarkImageBuilder opacity(int opacity);
 
         /**
          * Sets the rotation of the watermark

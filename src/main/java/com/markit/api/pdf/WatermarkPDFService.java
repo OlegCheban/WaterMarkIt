@@ -1,12 +1,13 @@
 package com.markit.api.pdf;
 
-import com.markit.api.positioning.WatermarkPosition;
-import com.markit.api.WatermarkingMethod;
-import org.apache.pdfbox.pdmodel.PDDocument;
-
-import java.awt.*;
+import java.awt.Color;
 import java.nio.file.Path;
 import java.util.function.Predicate;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+
+import com.markit.api.WatermarkingMethod;
+import com.markit.api.positioning.WatermarkPosition;
 
 /**
  * Watermark Service for applying watermarks to PDF files
@@ -80,7 +81,7 @@ public interface WatermarkPDFService {
         /**
          * Sets the opacity of the watermark
          */
-        WatermarkPDFBuilder opacity(float opacity);
+        WatermarkPDFBuilder opacity(int opacity);
 
         /**
          * Sets the rotation of the watermark
