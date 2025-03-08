@@ -29,4 +29,9 @@ data class WatermarkAttributes (
     var documentPredicate: Predicate<PDDocument> = Predicate { true },
     var pagePredicate: Predicate<Int> = Predicate { true },
     var watermarkEnabled: Boolean = true
-)
+){
+    fun setPosition(x: Int, y: Int) {
+        this.position = WatermarkPosition.CUSTOM // Ensure CUSTOM exists
+        this.positionAdjustment = WatermarkPositionCoordinates.Coordinates(x, y)
+    }
+}

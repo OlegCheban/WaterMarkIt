@@ -10,5 +10,6 @@ public enum WatermarkPosition {
     TOP_RIGHT,
     BOTTOM_LEFT,
     BOTTOM_RIGHT,
-    TILED
+    TILED,
+    CUSTOM
 }

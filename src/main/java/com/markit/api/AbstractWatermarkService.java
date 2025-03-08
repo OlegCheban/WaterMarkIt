@@ -109,10 +109,10 @@ public abstract class AbstractWatermarkService<Service, WatermarkBuilder, TextBa
         return (PositionStepBuilder) this;
     }
 
-    public PositionStepBuilder position(WatermarkPosition watermarkPosition, int x, int y) {
-        Objects.requireNonNull(watermarkPosition);
-        currentWatermark.setPosition(watermarkPosition);
-        currentWatermark.adjustPosition(x, y);
+    public PositionStepBuilder position(int x, int y) {
+        Objects.requireNonNull(x);
+        Objects.requireNonNull(y);
+        currentWatermark.setPosition(x, y); // Now calls the Kotlin method
         return (PositionStepBuilder) this;
     }
 

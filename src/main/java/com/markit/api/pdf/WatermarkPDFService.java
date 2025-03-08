@@ -99,11 +99,10 @@ public interface WatermarkPDFService {
         /**
          * Defines the position of the watermark on the file directly with x and y coordinates
          *
-         * @param watermarkPosition The position to place the watermark (e.g., CENTER, CORNER)
          * @param x The direct x-axis offset of watermark
          * @param y The direct y-axis offset of watermark
          */
-        WatermarkPositionStepPDFBuilder position(WatermarkPosition watermarkPosition, int x, int y);
+        WatermarkPositionStepPDFBuilder position(int x, int y);
 
         /**
          * Sets the dpi of the watermark
