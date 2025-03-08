@@ -14,7 +14,7 @@ import java.nio.file.Files
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class ImageBasedWatermarkImageBasedWatermarkTest {
+class ImageBasedWatermarkTest {
     private lateinit var file: File;
 
     @BeforeEach

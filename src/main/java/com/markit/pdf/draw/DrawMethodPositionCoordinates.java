@@ -30,6 +30,11 @@ public class DrawMethodPositionCoordinates extends PositionCoordinates {
     }
 
     @Override
+    public Coordinates topCenter() {
+        return new Coordinates((getPageWidth() - getWatermarkWidth()) / 2, MIN_Y_EDGE_SIZE);
+    }
+
+    @Override
     public Coordinates bottomLeft() {
         return new Coordinates(MIN_X_EDGE_SIZE, getPageHeight() - getWatermarkHeight());
     }
@@ -38,4 +43,10 @@ public class DrawMethodPositionCoordinates extends PositionCoordinates {
     public Coordinates bottomRight() {
         return new Coordinates(getPageWidth() - getWatermarkWidth() - MIN_X_EDGE_SIZE, getPageHeight() - getWatermarkHeight());
     }
+
+    @Override
+    public Coordinates bottomCenter() {
+        return new Coordinates((getPageWidth() - getWatermarkWidth()) / 2, getPageHeight() - getWatermarkHeight());
+    }
+
 }

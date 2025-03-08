@@ -15,9 +15,12 @@ interface WatermarkPositionCoordinates {
 
     fun topRight(): Coordinates
 
+    fun topCenter(): Coordinates
+
     fun bottomLeft(): Coordinates
 
     fun bottomRight(): Coordinates
+    fun bottomCenter(): Coordinates
 
     fun tiled(attr: WatermarkAttributes): List<Coordinates>
 

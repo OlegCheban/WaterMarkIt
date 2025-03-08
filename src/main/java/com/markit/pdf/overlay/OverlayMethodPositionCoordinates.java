@@ -29,6 +29,11 @@ public class OverlayMethodPositionCoordinates extends PositionCoordinates {
     }
 
     @Override
+    public Coordinates topCenter() {
+        return new Coordinates((getPageWidth() - getWatermarkWidth()) / 2, getPageHeight() - getWatermarkHeight() - EDGE_SIZE);
+    }
+
+    @Override
     public Coordinates bottomLeft() {
         return new Coordinates(EDGE_SIZE, getWatermarkHeight());
     }
@@ -36,5 +41,10 @@ public class OverlayMethodPositionCoordinates extends PositionCoordinates {
     @Override
     public Coordinates bottomRight() {
         return new Coordinates(getPageWidth() - getWatermarkWidth() - EDGE_SIZE, getWatermarkHeight());
+    }
+
+    @Override
+    public Coordinates bottomCenter() {
+        return new Coordinates((getPageWidth() - getWatermarkWidth()) / 2, getWatermarkHeight());
     }
 }

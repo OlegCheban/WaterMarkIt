@@ -73,4 +73,42 @@ class ImageWatermarkTest : BasePdfWatermarkTest() {
         assertTrue(result.isNotEmpty(), "The resulting byte array should not be empty")
         //outputFile(result, "ImageBasedWatermarkAdjust.pdf")
     }
+
+    @Test
+    @Throws(IOException::class)
+    fun `given Pdf when Image Watermark with TOP_CENTER position then apply Watermark`() {
+        // When
+        val result = WatermarkService.create()
+            .watermarkPDF(document)
+                .withImage(readFileFromClasspathAsBytes("logo.png"))
+                    .size(25)
+                    .position(WatermarkPosition.TOP_CENTER)
+                    .end()
+            .apply()
+
+        // Then
+        assertNotNull(result, "The resulting byte array should not be null")
+        assertTrue(result.isNotEmpty(), "The resulting byte array should not be empty")
+        // outputFile(result,  "ImageBasedWatermarkTopCenter.pdf")
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun `given Pdf when Image Watermark with BOTTOM_CENTER position then Apply Watermark`() {
+        // When
+        val result = WatermarkService.create()
+            .watermarkPDF(document)
+                .withImage(readFileFromClasspathAsBytes("logo.png"))
+                    .size(25)
+                    .position(WatermarkPosition.BOTTOM_CENTER)
+                    .end()
+            .apply()
+
+        // Then
+        assertNotNull(result, "The resulting byte array should not be null")
+        assertTrue(result.isNotEmpty(), "The resulting byte array should not be empty")
+        // outputFile(result, "ImageBasedWatermarkBottomCenter.pdf")
+    }
+
+
 }
