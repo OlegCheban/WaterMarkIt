@@ -23,6 +23,8 @@ abstract class PositionCoordinates(
             WatermarkPosition.BOTTOM_RIGHT -> listOf(bottomRight())
             WatermarkPosition.BOTTOM_CENTER -> listOf(bottomCenter())
             WatermarkPosition.TILED -> tiled(attr)
+            WatermarkPosition.CUSTOM -> listOf(attr.positionAdjustment)
+            else -> throw IllegalArgumentException("Unsupported watermark position: ${attr.position}")
         }
         if (attr.positionAdjustment.x != 0 || attr.positionAdjustment.y != 0) {
             coordinates = coordinates.map {
