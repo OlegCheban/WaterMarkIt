@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
+import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageInputStream;
 
 import com.markit.api.ImageType;
@@ -71,11 +72,8 @@ public class ImageConverter {
      */
     public ImageType detectImageType(byte[] imageBytes) {
         try (ImageInputStream iis = ImageIO.createImageInputStream(new ByteArrayInputStream(imageBytes))) {
-            Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
-            if (!readers.hasNext()) {
-                throw new ConvertBytesToBufferedImageException("Format d'image non supporté");
-            }
-            String formatName = readers.next().getFormatName().toLowerCase();
+            String formatName = detectFormatName(iis);
+            validateImageType(formatName);
             return mapFormatToImageType(formatName);
         } catch (IOException e) {
             throw new ConvertBytesToBufferedImageException("Erreur lors de la détection du type d'image");
@@ -92,14 +90,40 @@ public class ImageConverter {
      */
     public ImageType detectImageType(File file) {
         try (ImageInputStream iis = ImageIO.createImageInputStream(file)) {
-            Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
-            if (!readers.hasNext()) {
-                throw new ConvertBytesToBufferedImageException("Format d'image non supporté");
-            }
-            String formatName = readers.next().getFormatName().toLowerCase();
+            String formatName = detectFormatName(iis);
+            validateImageType(formatName);
             return mapFormatToImageType(formatName);
         } catch (IOException e) {
             throw new ConvertBytesToBufferedImageException("Erreur lors de la détection du type d'image");
+        }
+    }
+
+    /**
+     * Détecte le format d'image à partir d'un flux d'entrée.
+     *
+     * @param iis Le flux d'entrée d'image
+     * @return Le nom du format détecté
+     * @throws ConvertBytesToBufferedImageException Si le format ne peut pas être
+     *                                              détecté
+     */
+    private String detectFormatName(ImageInputStream iis) {
+        Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
+        if (!readers.hasNext()) {
+            throw new ConvertBytesToBufferedImageException("Format d'image non supporté");
+        }
+        return readers.next().getFormatName().toLowerCase();
+    }
+
+    /**
+     * Valide qu'un format d'image est supporté.
+     *
+     * @param formatName Le nom du format à valider
+     * @throws ConvertBytesToBufferedImageException Si le format n'est pas supporté
+     */
+    private void validateImageType(String formatName) {
+        Iterator<ImageWriterSpi> writers = ImageIO.getImageWritersByFormatName(formatName);
+        if (!writers.hasNext()) {
+            throw new ConvertBytesToBufferedImageException("Format d'image non supporté : " + formatName);
         }
     }
 
