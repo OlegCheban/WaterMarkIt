@@ -25,6 +25,13 @@ import com.markit.exceptions.ConvertBytesToBufferedImageException;
 public class ImageConverter {
     private final String ERR_MSG = "I/O error during image conversion";
 
+    /**
+     * Convertit un tableau d'octets en BufferedImage.
+     *
+     * @param imageBytes Le tableau d'octets contenant l'image à convertir
+     * @return L'image convertie sous forme de BufferedImage
+     * @throws ConvertBytesToBufferedImageException Si la conversion échoue
+     */
     public BufferedImage convertToBufferedImage(byte[] imageBytes) {
         return convert(() -> {
             try {
@@ -35,6 +42,13 @@ public class ImageConverter {
         });
     }
 
+    /**
+     * Convertit un fichier image en BufferedImage.
+     *
+     * @param file Le fichier image à convertir
+     * @return L'image convertie sous forme de BufferedImage
+     * @throws ConvertBytesToBufferedImageException Si la conversion échoue
+     */
     public BufferedImage convertToBufferedImage(File file) {
         return convert(() -> {
             try {
@@ -51,6 +65,14 @@ public class ImageConverter {
                         "Failed to convert image bytes to BufferedImage"));
     }
 
+    /**
+     * Convertit un BufferedImage en tableau d'octets.
+     *
+     * @param image     L'image à convertir
+     * @param imageType Le type d'image cible (PNG, JPEG, etc.)
+     * @return Le tableau d'octets contenant l'image convertie
+     * @throws ConvertBufferedImageToBytesException Si la conversion échoue
+     */
     public byte[] convertToByteArray(BufferedImage image, ImageType imageType) {
         var baos = new ByteArrayOutputStream();
 

@@ -4,33 +4,38 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
-
 import com.markit.api.ImageType;
 import com.markit.exceptions.ConvertBytesToBufferedImageException;
 
 /**
  * Test manuel pour la détection du type d'image.
  * Pour exécuter ce test :
- * 1. Créez un fichier test.png dans src/test/resources
+ * 1. Assurez-vous que le fichier logo.png existe dans src/test/resources
  * 2. Exécutez la méthode main
  */
 public class ImageConverterManualTest {
     public static void main(String[] args) {
         try {
-            // Créer une image de test
-            BufferedImage testImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-            File testFile = new File("src/test/resources/test.png");
-            testFile.getParentFile().mkdirs();
-            ImageIO.write(testImage, "PNG", testFile);
+            // Utiliser le fichier logo.png existant
+            File testFile = new File("src/test/resources/logo.png");
+            if (!testFile.exists()) {
+                System.err.println("Erreur : Le fichier logo.png n'existe pas dans src/test/resources");
+                return;
+            }
 
             // Tester la détection
             ImageConverter converter = new ImageConverter();
             ImageType detectedType = converter.detectImageType(testFile);
             System.out.println("Type d'image détecté : " + detectedType);
 
-            // Nettoyer
-            testFile.delete();
+            // Tester la conversion en BufferedImage
+            BufferedImage image = converter.convertToBufferedImage(testFile);
+            System.out.println("Image convertie avec succès : " + image.getWidth() + "x" + image.getHeight());
+
+            // Tester la conversion en bytes
+            byte[] imageBytes = converter.convertToByteArray(image, detectedType);
+            System.out.println("Image convertie en bytes : " + imageBytes.length + " octets");
+
             System.out.println("Test réussi !");
         } catch (IOException e) {
             System.err.println("Erreur lors du test : " + e.getMessage());
