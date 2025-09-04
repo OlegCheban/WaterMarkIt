@@ -63,5 +63,17 @@ public interface WatermarkService {
          * @param imageType The type of image
          */
         WatermarkImageService watermarkImage(File file, ImageType imageType);
+
+        /**
+         *
+         * @param file The file to be watermarked.
+         */
+        WatermarkImageService watermarkImage(File file);
+
+        /**
+         *
+         * @param fileBytes The byte array representing the source file.
+         */
+        WatermarkImageService watermarkImage(byte[] fileBytes);
     }
 }
