@@ -66,6 +66,16 @@ public interface WatermarkService {
         WatermarkImageService watermarkImage(File file, ImageType imageType);
 
         /**
+         *
+         * @param file The file to be watermarked.
+         */
+        WatermarkImageService watermarkImage(File file);
+
+        /**
+         *
+         * @param fileBytes The byte array representing the source file.
+         */
+        WatermarkImageService watermarkImage(byte[] fileBytes);
          * Sets the video file to be watermarked using a byte array.
          */
         WatermarkVideoService watermarkVideo(byte[] fileBytes);
