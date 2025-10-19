@@ -1,6 +1,5 @@
 package com.markit.image;
 
-import com.markit.api.ImageType;
 import com.markit.exceptions.ConvertBufferedImageToBytesException;
 import com.markit.exceptions.ConvertBytesToBufferedImageException;
 
@@ -45,11 +44,11 @@ public class ImageConverter {
                 .orElseThrow(() -> new ConvertBytesToBufferedImageException("Failed to convert image bytes to BufferedImage"));
     }
 
-    public byte[] convertToByteArray(BufferedImage image, ImageType imageType) {
+    public byte[] convertToByteArray(BufferedImage image, String imageType) {
         var baos = new ByteArrayOutputStream();
 
         try {
-            ImageIO.write(image, imageType.name(), baos);
+            ImageIO.write(image, imageType, baos);
         } catch (IOException e) {
             throw new ConvertBufferedImageToBytesException(ERR_MSG);
         }

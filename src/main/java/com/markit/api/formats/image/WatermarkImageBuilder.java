@@ -2,7 +2,6 @@ package com.markit.api.formats.image;
 
 import com.markit.api.WatermarkProcessor;
 import com.markit.api.builders.DefaultVisualWatermarkBuilder;
-import com.markit.api.ImageType;
 import com.markit.exceptions.WatermarkingException;
 import com.markit.image.ImageWatermarker;
 import com.markit.servicelocator.ServiceFactory;
@@ -17,28 +16,28 @@ public final class WatermarkImageBuilder
         extends DefaultVisualWatermarkBuilder<WatermarkImageService, WatermarkImageService.WatermarkImageBuilder>
         implements WatermarkImageService, WatermarkImageService.WatermarkImageBuilder {
 
-    public WatermarkImageBuilder(byte[] fileBytes, ImageType imageType) {
-        super(createWatermarkProcessor(fileBytes, imageType));
+    public WatermarkImageBuilder(byte[] fileBytes) {
+        super(createWatermarkProcessor(fileBytes));
     }
 
-    public WatermarkImageBuilder(File file, ImageType imageType) {
-        super(createWatermarkProcessor(file, imageType));
+    public WatermarkImageBuilder(File file) {
+        super(createWatermarkProcessor(file));
     }
 
-    private static WatermarkProcessor createWatermarkProcessor(File file, ImageType imageType) {
+    private static WatermarkProcessor createWatermarkProcessor(File file) {
         return watermarks -> {
             try {
-                return getImageWatermarker().watermark(file, imageType, watermarks);
+                return getImageWatermarker().watermark(file, watermarks);
             } catch (Exception e) {
                 throw new WatermarkingException("Error watermarking the image", e);
             }
         };
     }
 
-    private static WatermarkProcessor createWatermarkProcessor(byte[] fileBytes, ImageType imageType) {
+    private static WatermarkProcessor createWatermarkProcessor(byte[] fileBytes) {
         return watermarks -> {
             try {
-                return getImageWatermarker().watermark(fileBytes, imageType, watermarks);
+                return getImageWatermarker().watermark(fileBytes, watermarks);
             } catch (Exception e) {
                 throw new WatermarkingException("Error watermarking the image", e);
             }

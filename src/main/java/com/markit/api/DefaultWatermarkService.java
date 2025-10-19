@@ -7,10 +7,8 @@ import com.markit.api.formats.pdf.WatermarkPDFService;
 import com.markit.api.formats.video.WatermarkVideoBuilder;
 import com.markit.api.formats.video.WatermarkVideoService;
 import com.markit.exceptions.InvalidPDFFileException;
-import com.markit.utils.ImageTypeDetector;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
-import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.Executor;
@@ -59,27 +57,14 @@ public class DefaultWatermarkService implements WatermarkService.FileFormatSelec
 
     @Override
     public WatermarkImageService watermarkImage(File file) {
-        ImageType imageType = ImageTypeDetector.detect(file);
-
-        // Validate writer support
-        if (!ImageIO.getImageWritersByFormatName(imageType.name().toLowerCase()).hasNext()) {
-            throw new UnsupportedOperationException("No writer found for " + imageType);
-        }
-
-        return new WatermarkImageBuilder(file, imageType);
+        return new WatermarkImageBuilder(file);
     }
 
     @Override
     public WatermarkImageService watermarkImage(byte[] fileBytes) {
-        ImageType imageType = ImageTypeDetector.detect(fileBytes);
-
-        // Validate writer support
-        if (!ImageIO.getImageWritersByFormatName(imageType.name().toLowerCase()).hasNext()) {
-            throw new UnsupportedOperationException("No writer found for " + imageType);
-        }
-
-        return new WatermarkImageBuilder(fileBytes, imageType);
+        return new WatermarkImageBuilder(fileBytes);
     }
+
     public WatermarkVideoService watermarkVideo(byte[] fileBytes) {
         return new WatermarkVideoBuilder(fileBytes);
     }

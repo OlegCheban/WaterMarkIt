@@ -1,6 +1,5 @@
 package com.markit.pdf.draw;
 
-import com.markit.api.ImageType;
 import com.markit.api.WatermarkAttributes;
 import com.markit.image.ImageConverter;
 import com.markit.image.ImageWatermarker;
@@ -35,10 +34,7 @@ public class DefaultDrawPdfWatermarker implements DrawPdfWatermarker {
         var imageWatermarker = (ImageWatermarker) ServiceFactory.getInstance().getService(ImageWatermarker.class);
 
         // Apply watermark to the rendered image
-        var watermarkedImageBytes = imageWatermarker.watermark(
-                        imageConverter.convertToByteArray(image, ImageType.JPEG),
-                        ImageType.JPEG,
-                        attrs);
+        var watermarkedImageBytes = imageWatermarker.watermark(imageConverter.convertToByteArray(image, "JPEG"), attrs);
 
         // Create a PDImageXObject from the watermarked image bytes
         var pdImage = PDImageXObject.createFromByteArray(document, watermarkedImageBytes, "watermarked");

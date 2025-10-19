@@ -1,7 +1,6 @@
 package com.markit.image
 
 import com.markit.utils.FileUtils
-import com.markit.api.ImageType
 import com.markit.api.positioning.WatermarkPosition
 import com.markit.api.WatermarkService
 import org.junit.jupiter.api.Test

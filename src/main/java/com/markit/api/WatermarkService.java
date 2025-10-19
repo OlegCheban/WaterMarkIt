@@ -30,6 +30,7 @@ public interface WatermarkService {
      * Selector that provides a watermarking service for a specific file
      */
     interface FileFormatSelector {
+
         /**
          * Sets the PDF file to be watermarked using a byte array.
          */
@@ -48,20 +49,18 @@ public interface WatermarkService {
          */
         WatermarkPDFService watermarkPDF(PDDocument document);
 
-
         /**
-         *
          * @param file The image file to be watermarked.
          */
         WatermarkImageService watermarkImage(File file);
 
         /**
-         *
          * @param fileBytes The byte array representing the source image file.
          */
         WatermarkImageService watermarkImage(byte[] fileBytes);
+
         /**
-        * Sets the video file to be watermarked using a byte array.
+         * Sets the video file to be watermarked using a byte array.
          */
         WatermarkVideoService watermarkVideo(byte[] fileBytes);
 
