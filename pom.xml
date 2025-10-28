@@ -42,7 +42,7 @@
         <ai-imageio-core.version>1.4.0</ai-imageio-core.version>
         <jai-imageio-jpeg2000.version>1.4.0</jai-imageio-jpeg2000.version>
         <jbig2-imageio.version>3.0.4</jbig2-imageio.version>
-        <junit.version>5.13.4</junit.version>
+        <junit.version>6.0.0</junit.version>
         <kotlin.version>2.2.21</kotlin.version>
         <jacoco.verson>0.8.14</jacoco.verson>
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
