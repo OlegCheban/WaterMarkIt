@@ -6,11 +6,12 @@ import com.markit.api.WatermarkService
 import org.junit.jupiter.api.Test
 import java.awt.Color
 import java.io.IOException
+import java.io.File
 import kotlin.test.assertTrue
 import kotlin.test.assertNotNull
 
 class VideoWatermarkingTest {
-
+    
     @Test
     @Throws(IOException::class)
     fun `given video when apply several watermarks then make watermarked vidio`() {
@@ -24,6 +25,7 @@ class VideoWatermarkingTest {
                 .withImage(FileUtils.readFileFromClasspathAsBytes("logo.png"))
                 .position(WatermarkPosition.BOTTOM_RIGHT).end()
                 .size(8)
+                .opacity(40)  // NEW: Image opacity feature
             .and()
                 .withText("WaterMarkIt").end()
                 .position(WatermarkPosition.BOTTOM_LEFT).end()
@@ -32,10 +34,13 @@ class VideoWatermarkingTest {
                 .withImage(FileUtils.readFileFromClasspathAsBytes("logo.png"))
                 .position(WatermarkPosition.TOP_LEFT).end()
                 .size(8)
-            .apply();
+            .apply()
 
         assertNotNull(result, "The resulting byte array should not be null")
         assertTrue(result.isNotEmpty(), "The resulting byte array should not be empty")
-        //FileUtils.outputFile(result, "video_watermark.mp4")
+        
+        // Save output for verification
+        val outputFile = File("my-watermarked-video.mp4")
+        outputFile.writeBytes(result)
     }
 }
