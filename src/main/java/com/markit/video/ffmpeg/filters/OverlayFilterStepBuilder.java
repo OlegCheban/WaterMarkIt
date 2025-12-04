@@ -7,6 +7,7 @@ import com.markit.video.ffmpeg.probes.VideoDimensions;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * overlay filter chain builder
+ * overlay filter chain builder with rotation support
  *
  * @author Oleg Cheban
  * @since 1.4.0
@@ -50,9 +51,20 @@ public class OverlayFilterStepBuilder implements FilterStepBuilder {
         BufferedImage originalImage = attr.getImage().get();
         Dimension targetDimensions = calculateTargetDimensions(originalImage, attr.getSize());
         BufferedImage scaledImage = scaleImage(originalImage, targetDimensions);
-        List<Coordinates> coordinates = calculateOverlayCoordinates(attr, dimensions, targetDimensions);
+        
+        // Apply rotation if specified
+        BufferedImage finalImage = scaledImage;
+        Dimension finalDimensions = targetDimensions;
+        int rotation = attr.getRotationDegrees();
+        
+        if (rotation != 0) {
+            finalImage = rotateImage(scaledImage, rotation);
+            finalDimensions = new Dimension(finalImage.getWidth(), finalImage.getHeight());
+        }
+        
+        List<Coordinates> coordinates = calculateOverlayCoordinates(attr, dimensions, finalDimensions);
 
-        return new OverlayContext(scaledImage, coordinates, tempImages, lastLabel, step, isEmptyFilter);
+        return new OverlayContext(finalImage, coordinates, tempImages, lastLabel, step, isEmptyFilter);
     }
 
     private Dimension calculateTargetDimensions(BufferedImage image, int sizePercentage) {
@@ -76,12 +88,57 @@ public class OverlayFilterStepBuilder implements FilterStepBuilder {
         return scaled;
     }
 
+    /**
+     * Rotates an image by the specified angle in degrees.
+     * Uses the same rotation logic as text-based watermarks for consistency.
+     * 
+     * @param image The image to rotate
+     * @param degrees The rotation angle in degrees (positive = clockwise)
+     * @return A new BufferedImage with the rotated content
+     */
+    private BufferedImage rotateImage(BufferedImage image, int degrees) {
+        // Convert degrees to radians
+        double radians = Math.toRadians(degrees);
+        
+        // Calculate new dimensions after rotation
+        double sin = Math.abs(Math.sin(radians));
+        double cos = Math.abs(Math.cos(radians));
+        int originalWidth = image.getWidth();
+        int originalHeight = image.getHeight();
+        
+        int newWidth = (int) Math.floor(originalWidth * cos + originalHeight * sin);
+        int newHeight = (int) Math.floor(originalHeight * cos + originalWidth * sin);
+        
+        // Create new image with calculated dimensions
+        BufferedImage rotated = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = rotated.createGraphics();
+        
+        try {
+            configureGraphics(g2d);
+            
+            // Rotate around the center of the new image
+            AffineTransform transform = new AffineTransform();
+            transform.translate(newWidth / 2.0, newHeight / 2.0);
+            transform.rotate(radians);
+            transform.translate(-originalWidth / 2.0, -originalHeight / 2.0);
+            
+            g2d.setTransform(transform);
+            g2d.drawImage(image, 0, 0, null);
+        } finally {
+            g2d.dispose();
+        }
+        
+        return rotated;
+    }
+
     private BufferedImage createScaledImage(Dimension size) {
         return new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
     }
 
     private void configureGraphics(Graphics2D g2d) {
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     }
 
     private List<Coordinates> calculateOverlayCoordinates(WatermarkAttributes attr, VideoDimensions dimensions,
