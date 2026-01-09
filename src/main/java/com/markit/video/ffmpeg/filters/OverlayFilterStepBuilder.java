@@ -50,9 +50,15 @@ public class OverlayFilterStepBuilder implements FilterStepBuilder {
         BufferedImage originalImage = attr.getImage().get();
         Dimension targetDimensions = calculateTargetDimensions(originalImage, attr.getSize());
         BufferedImage scaledImage = scaleImage(originalImage, targetDimensions);
+
+        // Apply opacity in Java if specified (check if < 100, default is 100)
+        if (attr.getOpacity() < 100) {
+            scaledImage = applyOpacity(scaledImage, attr.getOpacity());
+        }
+
         List<Coordinates> coordinates = calculateOverlayCoordinates(attr, dimensions, targetDimensions);
 
-        return new OverlayContext(scaledImage, coordinates, tempImages, lastLabel, step, isEmptyFilter);
+        return new OverlayContext(scaledImage, coordinates, tempImages, attr, lastLabel, step, isEmptyFilter);
     }
 
     private Dimension calculateTargetDimensions(BufferedImage image, int sizePercentage) {
@@ -82,6 +88,34 @@ public class OverlayFilterStepBuilder implements FilterStepBuilder {
 
     private void configureGraphics(Graphics2D g2d) {
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    }
+
+    /**
+     * Apply opacity to an image by adjusting its alpha channel using AlphaComposite.
+     * This method creates a new BufferedImage with the specified opacity applied to all pixels.
+     *
+     * @param image the original image to apply opacity to
+     * @param opacityPercent the desired opacity level (0-100, where 0 is transparent and 100 is opaque)
+     * @return a new BufferedImage with the opacity applied
+     */
+    private BufferedImage applyOpacity(BufferedImage image, int opacityPercent) {
+        float alpha = opacityPercent / 100.0f;
+
+        BufferedImage result = new BufferedImage(
+                image.getWidth(),
+                image.getHeight(),
+                BufferedImage.TYPE_INT_ARGB
+        );
+
+        Graphics2D g2d = result.createGraphics();
+        try {
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+            g2d.drawImage(image, 0, 0, null);
+        } finally {
+            g2d.dispose();
+        }
+
+        return result;
     }
 
     private List<Coordinates> calculateOverlayCoordinates(WatermarkAttributes attr, VideoDimensions dimensions,
@@ -119,6 +153,8 @@ public class OverlayFilterStepBuilder implements FilterStepBuilder {
     }
 
     private String buildOverlayFilter(Coordinates coord, String inLabel, String outLabel, int imageIndex) {
+        // Opacity is now applied in Java before saving the image,
+        // so we always use the simple overlay filter
         return String.format("%s[%d:v]overlay=x=%d:y=%d%s",
                 inLabel,
                 imageIndex,
@@ -140,6 +176,7 @@ public class OverlayFilterStepBuilder implements FilterStepBuilder {
         private final BufferedImage scaledImage;
         private final List<Coordinates> coordinates;
         private final List<File> tempImages;
+        private final WatermarkAttributes attr;
         private String lastLabel;
         private int step;
         private boolean isEmptyFilter;
@@ -147,10 +184,11 @@ public class OverlayFilterStepBuilder implements FilterStepBuilder {
         private String outLabel;
 
         OverlayContext(BufferedImage scaledImage, List<Coordinates> coordinates, List<File> tempImages,
-                       String lastLabel, int step, boolean isEmptyFilter) {
+                       WatermarkAttributes attr, String lastLabel, int step, boolean isEmptyFilter) {
             this.scaledImage = scaledImage;
             this.coordinates = coordinates;
             this.tempImages = tempImages;
+            this.attr = attr;
             this.lastLabel = lastLabel;
             this.step = step;
             this.isEmptyFilter = isEmptyFilter;
