@@ -38,7 +38,7 @@
         <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
-        <pdfbox.version>2.0.32</pdfbox.version>
+        <pdfbox.version>3.0.6</pdfbox.version>
         <ai-imageio-core.version>1.4.0</ai-imageio-core.version>
         <jai-imageio-jpeg2000.version>1.4.0</jai-imageio-jpeg2000.version>
         <jbig2-imageio.version>3.0.4</jbig2-imageio.version>
