@@ -6,6 +6,7 @@ import com.markit.api.formats.video.WatermarkVideoService;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
@@ -68,5 +69,25 @@ public interface WatermarkService {
          * Sets the video file to be watermarked using a File object.
          */
         WatermarkVideoService watermarkVideo(File file);
+
+        /**
+         * Embeds hidden traceability data into a PDF document using a content stream comment.
+         * The data is invisible during rendering and survives most PDF editors and optimizers.
+         *
+         * @param file the PDF file to embed data into
+         * @param data the raw bytes to hide (e.g. a user ID, timestamp, hash)
+         * @return the modified PDF as a byte array
+         * @throws IOException if the file cannot be read or written
+         */
+        byte[] embedHiddenData(File file, byte[] data) throws IOException;
+
+        /**
+         * Extracts hidden traceability data previously embedded by {@link #embedHiddenData}.
+         *
+         * @param file the PDF file to inspect
+         * @return the embedded bytes, or {@code null} if no hidden data is found
+         * @throws IOException if the file cannot be read
+         */
+        byte[] extractHiddenData(File file) throws IOException;
     }
 }

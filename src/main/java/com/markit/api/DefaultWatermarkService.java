@@ -7,8 +7,11 @@ import com.markit.api.formats.pdf.WatermarkPDFService;
 import com.markit.api.formats.video.WatermarkVideoBuilder;
 import com.markit.api.formats.video.WatermarkVideoService;
 import com.markit.exceptions.InvalidPDFFileException;
+import com.markit.pdf.hidden.ContentStreamHiddenDataEmbedder;
+import com.markit.pdf.hidden.HiddenDataEmbedder;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.Executor;
@@ -24,6 +27,7 @@ import java.util.concurrent.Executor;
 public class DefaultWatermarkService implements WatermarkService.FileFormatSelector {
 
     private Executor executor;
+    private final HiddenDataEmbedder hiddenDataEmbedder = new ContentStreamHiddenDataEmbedder();
 
     public DefaultWatermarkService() {
     }
@@ -72,5 +76,22 @@ public class DefaultWatermarkService implements WatermarkService.FileFormatSelec
     @Override
     public WatermarkVideoService watermarkVideo(File file) {
         return new WatermarkVideoBuilder(file);
+    }
+
+    @Override
+    public byte[] embedHiddenData(File file, byte[] data) throws IOException {
+        try (PDDocument document = PDDocument.load(file);
+             ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            hiddenDataEmbedder.embed(document, data);
+            document.save(out);
+            return out.toByteArray();
+        }
+    }
+
+    @Override
+    public byte[] extractHiddenData(File file) throws IOException {
+        try (PDDocument document = PDDocument.load(file)) {
+            return hiddenDataEmbedder.extract(document);
+        }
     }
 }
