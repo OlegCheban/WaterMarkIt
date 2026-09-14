@@ -1,142 +1,146 @@
-# Contributor's Guide for WaterMarkIt
+# Contributing to WaterMarkIt
 
-Thank you for your interest in contributing to WaterMarkIt! This guide will walk you through the process of setting up the project, making contributions, and ensuring your code adheres to the project's formatting and style guidelines.
+You can help through code, examples, documentation, reproducible bug reports, and test media. A useful first contribution can be small: one clear example or one regression test makes the library easier to use.
 
-## Table of Contents
-- [Getting Started](#getting-started)
-   - [Forking the Repository](#forking-the-repository)
-   - [Cloning the Repository](#cloning-the-repository)
-   - [Setting Up the Development Environment](#setting-up-the-development-environment)
-   
-- [Making Contributions](#making-contributions)
-   - [Creating a Branch](#creating-a-branch)
-   - [Making Changes](#making-changes)
-   - [Committing Changes](#committing-changes)
-   - [Pushing Changes](#pushing-changes)
-   - [Creating a Pull Request](#creating-a-pull-request)
-   
-- [Code Formatting and Style Guidelines](#code-formatting-and-style-guidelines)
-   - [General Formatting Rules](#general-formatting-rules)
-   - [Java Code Style](#java-code-style)
-   - [Kotlin Code Style](#kotlin-code-style)
+[Choose a task](#choose-a-first-contribution) · [Build and test](#build-and-test) · [Package map](#find-your-way-around) · [PR checklist](#submit-a-pull-request)
 
-- [Testing](#testing)
-- [Code Review Process](#code-review-process)
-- [Additional Resources](#additional-resources)
+## Choose a first contribution
 
----
+Start with [good first issues](https://github.com/watermark-lab/WaterMarkIt/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22) or [help wanted](https://github.com/watermark-lab/WaterMarkIt/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22help%20wanted%22). Read the discussion before starting so you can see the scope and whether someone is already working on it.
 
-## Getting Started
+If no labeled issue fits, use one of these starting points to propose a small contribution and agree its scope in an issue.
 
-### Forking the Repository
-1. Go to the [WaterMarkIt GitHub repository](https://github.com/OlegCheban/WaterMarkIt).
-2. Click the "Fork" button in the top-right corner of the page. This will create a copy of the repository under your GitHub account.
+| Idea | Where to start | What a finished contribution demonstrates |
+| --- | --- | --- |
+| Add a PNG transparency regression test | `src/test/java/com/markit/image/`; `DefaultImageWatermarker` | A small generated transparent PNG accepts a watermark, remains readable, retains its dimensions, and preserves transparency outside the watermark. |
+| Test PDF text preservation | `src/test/java/com/markit/pdf/`; `WatermarkingMethod.OVERLAY` | A generated PDF retains its original extractable text and page count after adding an overlay; the test does not depend on an external PDF. |
+| Document FFmpeg setup on one OS | The [video instructions](README.md#video-watermarks) and video test | A reproducible setup recipe lists the tested OS and FFmpeg version, verifies both executables, and successfully processes a small video. |
 
-### Cloning the Repository
-1. Navigate to your forked repository on GitHub.
-2. Click the "Code" button and copy the repository URL.
-3. Open your terminal and run the following command to clone the repository:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/WaterMarkIt.git
-4. Navigate to the cloned repository:
-   ```bash
-   cd WaterMarkIt
+Keep a first task focused on one behavior. For a new feature, open an [issue](https://github.com/watermark-lab/WaterMarkIt/issues) with the use case, proposed behavior, and a sketch of the API. Discuss changes to public APIs, dependencies, or processing defaults before investing in a large implementation.
 
-### Setting Up the Development Environment
-1. Ensure you have Java 11 or higher installed. You can check your Java version by running:
-   ```bash
-   java -version   
-2. Install [Maven](https://maven.apache.org/) if you don't already have it.
-3. Build the project using Maven:
-   ```bash
-   mvn clean install
-4. Set up your IDE (e.g., IntelliJ IDEA, Eclipse) to use the project's Maven configuration.
+To report a bug, include a minimal example, expected and actual behavior, library/JDK/OS versions, and the smallest shareable input that reproduces it. Include FFmpeg details for audio and video. Use synthetic or redistributable fixtures without private data.
 
----
-## Making Contributions
+## Build and test
 
-### Creating a Branch
-Before making changes, create a new branch for your work:
+### Prerequisites
 
-   ```bash
-      git checkout -b feature/your-feature-name
-   ```
+- A JDK: use Java 11 or 17 to match the [CI configuration](.github/workflows/mvn.yml).
+- Maven. Import `pom.xml` in your IDE; Maven configures both Java and Kotlin compilation.
+- FFmpeg, including `ffprobe`, on `PATH` for the complete media test suite. See the [video setup notes](README.md#video-watermarks).
 
-Use a descriptive branch name that reflects the purpose of your changes.
+Verify the tools in the same shell used to build:
 
-### Making Changes
-Make your changes to the codebase. Ensure you follow the Code Formatting and Style Guidelines.
-
-Add new tests if you are introducing new functionality or modifying existing behavior.
-
-### Committing Changes
-Stage your changes:
-
-```bash
-  git add .
+```shell
+java -version
+mvn -version
+ffmpeg -version
+ffprobe -version
 ```
 
-Commit your changes with a descriptive commit message:
+Make sure Maven reports the intended JDK. Some audio tests skip when FFmpeg is unavailable; the video test requires FFmpeg and ffprobe. A run with skipped media tests is not a full media verification.
 
-```bash
-  git commit -m "Your descriptive commit message"
+### Get the source
+
+Fork [watermark-lab/WaterMarkIt](https://github.com/watermark-lab/WaterMarkIt), then clone your fork and create a branch:
+
+```shell
+git clone https://github.com/YOUR_USERNAME/WaterMarkIt.git
+cd WaterMarkIt
+git checkout -b docs/your-change
 ```
 
-### Pushing Changes
-Push your changes to your forked repository:
+Use a branch name that describes your change; for example, `fix/png-transparency` or `test/pdf-overlay-text`.
 
-```bash
-  git push origin feature/your-feature-name
+### Run the checks
+
+Run tests during development:
+
+```shell
+mvn test
 ```
 
-### Creating a Pull Request
-1. Go to your forked repository on GitHub
-2. Click the "Compare & pull request" button next to your branch
-3. Fill out the pull request template with a clear description of your changes
-4. Submit the pull request and wait for feedback from the maintainers
+Run one relevant class while iterating, for example:
 
----
-## Code Formatting and Style Guidelines
-### General Formatting Rules
-   - Use 4 spaces for indentation (no tabs).
-   - Ensure all files end with a newline.
+```shell
+mvn "-Dtest=FormatContentStepTest" test
+```
 
-### Java Code Style
-- Follow the Google Java Style Guide for Java code.
-- Use camelCase for variable and method names.
-- Use PascalCase for class names.
-- Use UPPER_SNAKE_CASE for constants.
-- Always include Javadoc comments for public classes, methods, and fields.
-- Use @Override annotations for overridden methods.
-- Don't use Java POJO, use Kotlin data classes instead.
+Before submitting a code change, run the same build command as CI:
 
-### Kotlin Code Style
-- Follow the Kotlin Coding Conventions.
-- Use data class for simple data structures.
+```shell
+mvn --errors --batch-mode clean install
+```
 
----
-### Testing
-- Write unit tests for all new functionality using [JUnit 5](https://junit.org/junit5/)
-- Ensure all tests pass before submitting a pull request:
-  ```bash
-    mvn test
-  ```
-- Use descriptive test method names that explain the purpose of the test
+This runs tests, packages the library, and installs it into your local Maven repository using the version declared in `pom.xml`. It does not publish a release. Use the installed version in a consuming project when trying source-tree features.
 
----
-### Code Review Process
-- After submitting a pull request, the maintainers will review your changes
-- Address any feedback or requested changes promptly
-- Once approved, your changes will be merged into the main branch
+Test reports are in `target/surefire-reports/`. A complete build also generates the JaCoCo report in `target/site/jacoco/`.
 
----
-### Additional Resources
-- [GitHub Flow Guide](https://guides.github.com/introduction/flow/)
-- [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html)
-- [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html)
-- [Maven Documentation](https://maven.apache.org/guides/)
+For documentation-only changes, check Markdown rendering, links, and the relevant code examples. State what you verified in the PR; distinguish compilation, test execution, and visual inspection.
 
----
-Thank you for contributing to WaterMarkIt! Your efforts help make this project better for everyone.
+## Find your way around
 
-Happy coding! 🚀
+Production Java and Kotlin sources both live under `src/main/java/com/markit/`; Kotlin tests live under `src/test/java/com/markit/`.
+
+| Path under `src/main/` | Responsibility |
+| --- | --- |
+| `java/com/markit/api/` | Public entry point, format-specific fluent builders, and watermark configuration |
+| `java/com/markit/pdf/` | PDF orchestration, rasterization, overlays, and font handling |
+| `java/com/markit/image/` | Image conversion, positioning, and watermark painting |
+| `java/com/markit/video/ffmpeg/` | Video probing, filter graphs, and FFmpeg execution |
+| `java/com/markit/audio/` | Audible watermarks, audio filter graphs, and text-to-speech |
+| `java/com/markit/servicelocator/` | Discovery and priority selection of SPI implementations |
+| `resources/META-INF/services/` | `ServiceLoader` provider registrations |
+
+Start with a nearby test and follow the call from `WatermarkService` into the format-specific builder. The [advanced usage guide](docs/advanced-usage.md) explains the public extension mechanism.
+
+## Code and test conventions
+
+- Keep changes focused. Use explicit dependencies, small methods, and clear responsibility boundaries; prefer composition over deep inheritance.
+- Use Java for public service interfaces and core processing. Kotlin is used for tests and selected value types, enums, and exceptions; follow the conventions of the area you are changing.
+- Keep Java callers in mind when changing Kotlin types exposed by the API. Document public methods and any changes to defaults, formats, resource ownership, or exceptions.
+- Preserve the existing encoding and line endings of every file. Follow nearby indentation and naming; avoid unrelated formatting or import changes.
+- Add behavior-focused JUnit 5 tests for fixes and new processing behavior. Prefer small generated inputs and assertions about the result over checks that only assert non-empty bytes.
+- Cover resource cleanup and failure behavior when changing external process execution or temporary files.
+- When changing an SPI implementation, check its registration under `META-INF/services` and the relevant service-loading tests.
+- Update examples and documentation when changing public behavior. Keep the declared Java baseline in mind.
+
+## Reproduce the README preview
+
+The [preview generator](examples/GenerateImagePreview.java) creates an original sample PNG and processes it with WaterMarkIt. It needs no external input files or FFmpeg. Run these commands from the repository root after compiling the library:
+
+```shell
+mvn compile dependency:build-classpath -DincludeScope=runtime -Dmdep.outputFile=target/runtime-classpath.txt
+```
+
+PowerShell:
+
+```powershell
+$dependencies = Get-Content -Raw target/runtime-classpath.txt
+java --class-path "target/classes;$($dependencies.Trim())" examples/GenerateImagePreview.java
+```
+
+Linux or macOS:
+
+```sh
+dependencies="$(cat target/runtime-classpath.txt)"
+java --class-path "target/classes:$dependencies" examples/GenerateImagePreview.java
+```
+
+The output is written to `target/readme-preview/image-before.png` and `image-after.png`. Inspect both before replacing the checked-in files under `docs/assets/`. The generator also accepts an output directory as its final argument.
+
+## Submit a pull request
+
+Open a PR from your branch to `master`. Describe the concrete problem or use case, the resulting behavior, and the checks you ran. Link the related issue if one exists.
+
+Before submitting:
+
+- Check that the diff contains only the intended changes.
+- Preserve source encoding, line endings, and non-ASCII text.
+- Include regression tests for changed behavior, or explain why the change does not require them.
+- Update any affected examples, API documentation, and resource-ownership notes.
+- Report the commands and environment used for verification, including skipped tests or checks you could not run.
+- For a visual change, attach or link a small before/after example.
+
+Review focuses on behavior, compatibility, design, and test evidence. Keep design questions and follow-up discussion in the issue or PR so future contributors can understand the decision.
+
+Thank you for helping improve WaterMarkIt. Questions about setup or contribution scope are welcome in [GitHub Issues](https://github.com/watermark-lab/WaterMarkIt/issues).

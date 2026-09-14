@@ -1,280 +1,272 @@
-[![Maintainability](https://qlty.sh/gh/OlegCheban/projects/WaterMarkIt/maintainability.svg)](https://qlty.sh/gh/OlegCheban/projects/WaterMarkIt)
-[![Code Coverage](https://qlty.sh/gh/OlegCheban/projects/WaterMarkIt/coverage.svg)](https://qlty.sh/gh/OlegCheban/projects/WaterMarkIt)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/OlegCheban/WaterMarkIt)
-[![javadoc](https://img.shields.io/badge/javadoc-1.4.2-brightgreen.svg)](https://javadoc.io/doc/io.github.watermark-lab/WaterMarkIt/latest/index.html)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/OlegCheban/WaterMarkIt)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/OlegCheban/WaterMarkIt/blob/master/LICENSE)
 # WaterMarkIt
 
-WaterMarkIt is a lightweight, framework-agnostic Java library for adding visual and audible watermarks to PDFs, images, videos, and audio files through a consistent fluent API.
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.watermark-lab/WaterMarkIt)](https://central.sonatype.com/artifact/io.github.watermark-lab/WaterMarkIt)
+[![Javadoc](https://javadoc.io/badge2/io.github.watermark-lab/WaterMarkIt/javadoc.svg)](https://javadoc.io/doc/io.github.watermark-lab/WaterMarkIt)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/OlegCheban/WaterMarkIt)
+[![Maintainability](https://qlty.sh/gh/OlegCheban/projects/WaterMarkIt/maintainability.svg)](https://qlty.sh/gh/OlegCheban/projects/WaterMarkIt)
+[![Code Coverage](https://qlty.sh/gh/OlegCheban/projects/WaterMarkIt/coverage.svg)](https://qlty.sh/gh/OlegCheban/projects/WaterMarkIt)
+[![Java](https://img.shields.io/badge/Java-11%2B-blue)](#requirements-and-installation)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Add text or image overlays to visual content, mix audio clips or locally synthesized speech into audio tracks, and choose how PDF watermarks are applied - including rendering-based processing that makes them significantly harder to remove with standard PDF editors.
+Add watermarks to PDFs, images, videos, and audio from Java through a type-safe fluent API.
 
-## Why WaterMarkIt?
+WaterMarkIt handles PDF processing, audio mixing, and offline speech synthesis. Use it in a backend, a batch job, or a desktop application without adopting an application framework.
 
-Before implementing watermarking from scratch in a Java application, consider WaterMarkIt when you need visual watermarks for PDFs, images, or videos, or audible watermarks for audio files. The library provides a type-safe fluent API and encapsulates PDF processing, FFmpeg command construction, audio mixing, temporary-resource management, and offline text-to-speech integration. This lets applications add watermarking without maintaining their own media-processing pipeline.
+[Quick start](#quick-start) · [PDF](#pdf-watermarks) · [Images](#image-watermarks) · [Video](#video-watermarks) · [Audio](#audio-watermarks) · [Advanced usage](docs/advanced-usage.md) · [Contributing](#contributing)
 
-## Features
+## What you can build
 
-- **Internal DSL**: Provides a user-friendly way to configure and apply watermarks with ease, while also ensuring type safety at compilation time.
+- **Flexible watermark configuration:**  customize appearance, positioning, and multiple layers, with conditions that control watermarking for entire PDF documents or individual pages.
+- **Branded visual content:** place text or a logo on images and videos, or tile a watermark across the content.
+- **Audio previews:** mix an audible clip or an offline spoken message into an audio track at a chosen time.
+- **Custom processing:** combine multiple watermark layers and replace processing services through Java's `ServiceLoader` SPI.
 
-- **Types of Watermarks**:
-  - Text-based watermarks
-  - Image-based watermarks
-  - Audible audio and text-to-speech watermarks
+You can customize watermark font, color, size, position, rotation, and opacity. PDF pages can be rendered in parallel. Text watermarks can also include a superscript ® at the top right.
 
-- **Customizable Watermarks**: Customize various aspects of your watermark, including:
-  - Font
-  - Color
-  - Size
-  - Position
-  - Rotation
-  - Opacity
-  - DPI
+## Requirements and installation
 
-- **Trademarks**: A capability to add the trademark symbol ® to text-based watermarks.
+Java 11 or higher is required.
 
-- **Page orientation support**: Full support for both portrait and landscape orientations.
+### Maven
 
-- **Supported Formats**:
-  - PDF
-  - Images (JPEG, PNG, etc.)
-  - Videos (MP4, MOV, AVI, MKV, etc)
-  - Audio (WAV, MP3, FLAC, M4A/AAC, OGG, Opus, and AIFF)
-  
-- **Drawn Watermarks**: The library provides the `WatermarkingMethod.DRAW` method to add watermarks to PDF files that can't be easily removed. This mode generates an image from a PDF page, applies watermarks to the image, and replaces all layers of the page with the modified image.
-
-- **Multithreading**: Leverages a thread pool for efficient watermarking. Particularly useful for the `WatermarkingMethod.DRAW` method and multi-page files such as PDFs, enabling parallel watermarking with a separate thread for each page.
-
-## Getting Started
-
-### Prerequisites
-
-- Java 11 or higher
-- Maven or Gradle
-
-### Installation
-
-**For Maven**, add the following dependency to your `pom.xml`:
+Add to `pom.xml`:
 
 ```xml
 <dependency>
     <groupId>io.github.watermark-lab</groupId>
     <artifactId>WaterMarkIt</artifactId>
-    <version>1.4.2</version>
+    <version>1.5.0</version>
 </dependency>
 ```
 
-**For Gradle**, add the following to your `build.gradle`:
+### Gradle
+
+Use `mavenCentral()` in your repositories configuration.
+
+Groovy, in `build.gradle`:
+
+```groovy
+implementation 'io.github.watermark-lab:WaterMarkIt:1.5.0'
+```
+
+Kotlin, in `build.gradle.kts`:
+
 ```kotlin
-implementation 'io.github.watermark-lab:WaterMarkIt:1.4.2'
+implementation("io.github.watermark-lab:WaterMarkIt:1.5.0")
 ```
 
-### Usage
+## Quick start
+
+With the dependency installed, put an `input.pdf` in your application's working directory and run this class. It writes a new `output.pdf` with a translucent watermark.
 
 ```java
-WatermarkService.create(
-                //use a thread pool when necessary - for instance, for large PDFs with many pages
-                Executors.newFixedThreadPool(
-                        Runtime.getRuntime().availableProcessors()
-                )
-        )
-        .watermarkPDF(new File("path/to/file.pdf"))
-           .withImage(new File("path/to/watermark.png"))
-           .position(WatermarkPosition.CENTER).end()
-           .opacity(20)
-        .and()
-           .withText("WaterMarkIt")
-               .font(Font.ARIAL)
-               .bold()
-               .color(Color.BLUE)
-               .addTrademark()
-               .end()           
-           .position(WatermarkPosition.TILED)
-               .adjust(35, 0)
-               .horizontalSpacing(10)
-               .end()
-           .opacity(10)
-           .rotation(25)
-           .size(110)
-        .and()
-           .withText(LocalDateTime.now().toString()).end()
-           .position(WatermarkPosition.TOP_RIGHT)
-               .adjust(0, -30)
-               .end()
-           .size(50)
-        .apply()
-```
-![Screenshot](https://github.com/user-attachments/assets/5d573ee8-ddf3-4204-8c33-502099bb39eb)
+import com.markit.api.WatermarkService;
+import com.markit.api.WatermarkingMethod;
 
-### Watermarking conditions 
-```java
-// skip the first page (the page index starts from 0)
-WatermarkService.create()
-    .watermarkPDF(document)
-        .withText("Text-based Watermark").end()
-            .pageFilter(index -> index >= 1)
-    .apply()
-```
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-```java
-// don't add a watermark for the owner of the file; the owner has access to the original file.
-WatermarkService.create()
-    .watermarkPDF(document)
-        .withText("Text-based Watermark").end()
-            .enableIf(!isOwner)
-    .apply()
-```
+public class WatermarkExample {
+    public static void main(String[] args) throws IOException {
+        byte[] result = WatermarkService.create()
+            .watermarkPDF(new File("input.pdf"))
+            .withText("DRAFT").end()
+            .method(WatermarkingMethod.OVERLAY)
+            .opacity(25)
+            .apply();
 
-```java
-// Apply watermark only if the document has more than 3 pages
-WatermarkService.create()
-    .watermarkPDF(document)
-        .withText("Text-based Watermark").end()
-            .documentFilter(document -> document.getNumberOfPages() > 3)
-    .apply()  
-```
-
-### Video Watermarking
-
-The library supports adding watermarks to video files using FFmpeg. This feature allows you to apply both text-based and image-based watermarks to various video formats.
-
-#### Prerequisites for Video Watermarking
-
-- **FFmpeg**: The library requires FFmpeg to be installed on your system and available in the system PATH. FFmpeg is used internally to process video files and apply watermarks.
-
-  **Installation:**
-  - **Windows**: Download from [FFmpeg official website](https://ffmpeg.org/download.html) or use package managers like Chocolatey (`choco install ffmpeg`)
-  - **macOS**: Use Homebrew (`brew install ffmpeg`)
-  - **Linux**: Use your distribution's package manager (e.g., `sudo apt install ffmpeg` on Ubuntu)
-
-```java
-WatermarkService.create()
-    .watermarkVideo(videoFile)
-        .withText("WaterMarkIt")
-            .color(Color.RED)
-            .end()
-        .opacity(50)
-        .position(WatermarkPosition.CENTER).end()
-        .size(30)
-    .and()
-        .withImage(logoFile)
-        .position(WatermarkPosition.BOTTOM_RIGHT).end()
-        .size(8)
-    .apply();
-```
-
-### Audio Watermarking
-
-Audio watermarks are audible layers mixed into the original audio stream. FFmpeg must be
-installed and available on the system `PATH`.
-
-Mix an audio-file watermark at 25% of its original (unity) gain:
-
-```java
-byte[] result = WatermarkService.create()
-    .watermarkAudio(source)
-        .withAudio(watermark)
-        .volume(25)
-    .apply();
-```
-
-Generate an offline spoken watermark and start it after 15 seconds:
-
-```java
-import com.markit.audio.tts.FreeTtsVoice;
-
-byte[] result = WatermarkService.create()
-    .watermarkAudio(source)
-        .withText("WaterMarkIt")
-            .voice(FreeTtsVoice.KEVIN)
-            .end()
-        .volume(20)
-        .startAt(Duration.ofSeconds(15))
-    .apply();
-```
-
-Multiple watermark layers are mixed in one FFmpeg invocation:
-
-```java
-byte[] result = WatermarkService.create()
-    .watermarkAudio(source)
-        .withAudio(chime)
-        .volume(25)
-        .startAt(Duration.ofSeconds(3))
-    .and()
-        .withText("Property of WaterMarkIt")
-            .end()
-        .volume(15)
-        .startAt(Duration.ofSeconds(20))
-    .apply();
-```
-
-`volume` controls only watermark gain (`0` is silent, `100` is unity). Source gain is
-not normalized, so loud mixes may clip. Output duration matches the source and delayed
-watermarks are truncated at its end.
-
-File sources preserve WAV, MP3, FLAC, M4A/AAC, OGG, Opus, and AIFF containers.
-Unknown extensions and `byte[]` sources produce WAV output; FFmpeg detects input bytes
-by content.
-
-Text uses offline FreeTTS with the US-English `FreeTtsVoice.KEVIN_16` voice by default.
-Typed constants `KEVIN` (8 kHz) and `KEVIN_16` (16 kHz) prevent invalid voice names.
-Custom voices and engines are supported through the `TextToSpeechVoice` and
-`TextToSpeechEngine` SPI without network services.
-
-## Extensibility and Customization
-
-The library uses Java's ServiceLoader mechanism to load implementations of various services. You can override the services that implement the `Prioritizable` interface.
-
-1. Create your own implementation of the desired service interface
-2. Implement the `getPriority()` method to return a value higher than the default implementation
-3. Register your implementation in the `META-INF/services` directory
-
-```java
-public class CustomPdfWatermarker implements DrawPdfWatermarker {
-    @Override
-    public int getPriority() {
-        // Return a value higher than default to take precedence
-        return Prioritizable.DEFAULT_PRIORITY + 1;
-    }
-    
-    @Override
-    public void watermark(PDDocument document, int pageIndex, List<WatermarkAttributes> attrs) throws IOException {
-        // Custom watermarking implementation
+        Files.write(Path.of("output.pdf"), result);
     }
 }
 ```
 
-Then create a file `META-INF/services/com.markit.pdf.draw.DrawPdfWatermarker` containing:
+`apply()` waits for processing to finish and returns the encoded result as `byte[]`.
+
+## PDF watermarks
+
+Portrait and landscape pages are supported, including PDFs with rotated pages.
+
+### Choose a mode
+
+| Mode | How it works | When to use it |
+| --- | --- | --- |
+| `OVERLAY` | Adds text or images to the existing page content. Existing text remains searchable and selectable. | Documents that must retain their text and vector content. The watermark remains separately editable PDF content. |
+| `DRAW` (default) | Renders each affected page to an image, adds the watermark, and replaces the page content with that image. | Visual previews where a watermark should be harder to remove with standard PDF editing tools. Original page text is no longer searchable or selectable without OCR. |
+
+`DRAW` uses 300 DPI by default. DPI affects image quality, memory use, processing time, and output size. Rasterization makes editing the watermark harder, but does not guarantee that it cannot be removed.
+
+To select rasterization explicitly:
+
+```java
+byte[] result = WatermarkService.create()
+    .watermarkPDF(new File("input.pdf"))
+    .withText("CONFIDENTIAL").end()
+    .method(WatermarkingMethod.DRAW)
+    .dpi(150)
+    .opacity(30)
+    .apply();
+
+Files.write(Path.of("preview.pdf"), result);
 ```
-com.example.CustomPdfWatermarker
+
+### Apply conditions
+
+Each watermark can have its own page filter, document filter, and enable condition. Page indexes start at zero. In this example, all three conditions must match:
+
+```java
+boolean isOwner = false;
+
+byte[] result = WatermarkService.create()
+    .watermarkPDF(new File("input.pdf"))
+    .withText("REVIEW COPY").end()
+    .method(WatermarkingMethod.OVERLAY)
+    .pageFilter(index -> index >= 1)
+    .documentFilter(pdf -> pdf.getNumberOfPages() > 3)
+    .enableIf(!isOwner)
+    .apply();
+
+Files.write(Path.of("review-copy.pdf"), result);
 ```
 
-## Why Kotlin?
+If a recipient should receive the original file unchanged, return the original directly from your application. Disabling a watermark does not mean that PDF loading and serialization are skipped.
 
-While WaterMarkIt is primarily a Java library targeting Java 11 for better compatibility, we selectively use Kotlin in specific areas to enhance code quality and developer experience:
+For multiple layers, tiling, positioning, and parallel PDF rendering, see [advanced usage](docs/advanced-usage.md).
 
-### Use Cases
+## Image watermarks
 
-- **Test Code**: Kotlin's concise syntax and powerful testing features make our test suite more readable and maintainable
-- **Data Classes**: Java 11 lacks records (introduced in Java 14+), so we use Kotlin's data classes for immutable value objects
-- **Enums**: Kotlin enums provide cleaner syntax for associating data with enum values
-- **Exception Classes**: Custom exceptions benefit from Kotlin's concise class declarations with automatic constructor generation
+Add a translucent, rotated label to a PNG:
 
-### For Contributors
+```java
+import com.markit.api.positioning.WatermarkPosition;
+import java.awt.Color;
 
-When contributing to WaterMarkIt:
-- **Use Java** for all public APIs and core library functionality
-- **Use Kotlin** for test classes, internal data structures, and utility classes where it provides clear benefits
+byte[] result = WatermarkService.create()
+    .watermarkImage(new File("input.png"))
+    .withText("DRAFT").color(new Color(190, 45, 55)).bold().end()
+    .position(WatermarkPosition.CENTER).end()
+    .rotation(25)
+    .size(65)
+    .opacity(50)
+    .apply();
 
-## Dependencies 
-- **Apache PDFBox**: [Apache PDFBox](https://pdfbox.apache.org/) - A Java library for working with PDF documents.
-- **JAI Image I/O**: [JAI Image I/O](https://github.com/jai-imageio/jai-imageio-core) - Image I/O library for Java, supporting various image formats.
-- **FreeTTS**: [JVoiceXML FreeTTS](https://github.com/JVoiceXML/FreeTTS) - Offline US-English speech synthesis for audible text watermarks.
+Files.write(Path.of("preview.png"), result);
+```
+
+| Original PNG | WaterMarkIt output |
+| --- | --- |
+| ![Original sample proposal without a watermark](docs/assets/image-before.png) | ![The same sample proposal with a translucent diagonal DRAFT watermark](docs/assets/image-after.png) |
+
+This comparison is generated by the library using the settings above. To use a logo, start the watermark with `withImage(new File("logo.png"))`. Use `and()` to add another text or image layer. 
+
+## Video watermarks
+
+Install [FFmpeg](https://ffmpeg.org/download.html), including `ffprobe`, and make both executables available on the application's `PATH`. Check from the same environment that launches your application:
+
+```shell
+ffmpeg -version
+ffprobe -version
+```
+
+Your FFmpeg build must include the `libx264` encoder and the filters needed for the selected watermarks, such as `drawtext` and `overlay`. Text rendering also depends on fonts available to the application and FFmpeg.
+
+```java
+import com.markit.api.positioning.WatermarkPosition;
+
+byte[] result = WatermarkService.create()
+    .watermarkVideo(new File("input.mov"))
+    .withText("PREVIEW").end()
+    .position(WatermarkPosition.CENTER).end()
+    .opacity(35)
+    .size(30)
+    .and()
+    .withImage(new File("logo.png"))
+    .position(WatermarkPosition.BOTTOM_RIGHT).end()
+    .size(8)
+    .apply();
+
+Files.write(Path.of("preview.mp4"), result);
+```
+
+The default video implementation produces MP4 with H.264 video even when the input is MOV, AVI, or MKV. Processing re-encodes the video; it does not preserve the original video bitstream. Allow time and temporary disk space for media processing.
+
+## Audio watermarks
+
+Audio watermarks are audible layers mixed into the source track. FFmpeg must be installed and available on `PATH`.
+
+Mix a clip at 25% of its original gain:
+
+```java
+byte[] result = WatermarkService.create()
+    .watermarkAudio(new File("source.wav"))
+    .withAudio(new File("chime.wav"))
+    .volume(25)
+    .apply();
+
+Files.write(Path.of("preview.wav"), result);
+```
+
+Combine a clip with an offline spoken watermark, each starting at a different time:
+
+```java
+import com.markit.audio.tts.FreeTtsVoice;
+import java.time.Duration;
+
+byte[] result = WatermarkService.create()
+    .watermarkAudio(new File("source.wav"))
+    .withAudio(new File("chime.wav"))
+    .volume(25)
+    .startAt(Duration.ofSeconds(3))
+    .and()
+    .withText("Property of WaterMarkIt")
+        .voice(FreeTtsVoice.KEVIN_16)
+        .end()
+    .volume(15)
+    .startAt(Duration.ofSeconds(20))
+    .apply();
+
+Files.write(Path.of("spoken-preview.wav"), result);
+```
+
+- Multiple layers are mixed in one FFmpeg invocation. Each can use `enableIf(condition)`.
+- `volume` accepts `0` to `100`: zero is silent, 100 is the watermark's original gain. It does not normalize the source; loud mixes may clip.
+- Output duration matches the source. Delayed watermarks are truncated at its end.
+- File sources select WAV, MP3, FLAC, M4A, AAC, OGG, Opus, or AIFF output based on their extension. Unknown extensions and `byte[]` sources produce WAV. FFmpeg detects input bytes by content; output is re-encoded.
+- Speech uses offline FreeTTS with US-English `KEVIN_16` (16 kHz) by default; `KEVIN` (8 kHz) is also available. Custom languages and voices require a suitable `TextToSpeechEngine` and `TextToSpeechVoice` implementation.
+
+## Integration notes
+
+- **Inputs and results:** all four entry points accept `File` or `byte[]`. PDF also accepts a PDFBox `PDDocument`. Results are returned as a complete byte array, so account for heap usage when processing large files.
+- **PDF ownership:** `apply()` closes the PDF document, including a `PDDocument` supplied by your application. Treat a PDF builder and its document as one operation.
+- **Executors:** `create()` processes PDF pages sequentially. `create(executor)` submits `DRAW` page tasks to the supplied executor and waits for completion. Your application owns and shuts down that executor; `OVERLAY` processing remains sequential.
+- **Configuration:** `end()` finishes text or position configuration; `and()` starts another watermark with fresh defaults. PDF `method(...)` applies to the current watermark, so set it on each layer when combining overlays.
+- **Visual values:** opacity is a percentage from 0 to 100; size accepts 0 to 300 and is interpreted by the selected renderer. It is not a universal font-point size or scale percentage across all formats.
+- **Runtime dependencies:** Maven or Gradle resolves PDFBox, JAI Image I/O, FreeTTS, and the Kotlin standard library transitively. Java applications do not need Kotlin source or a Kotlin compiler. FFmpeg is installed separately.
+- **Extensions:** replace a renderer, font provider, FFmpeg service, or speech engine through `ServiceLoader`.
+
+## Releases and API compatibility
+
+Use [release notes](https://github.com/OlegCheban/WaterMarkIt/releases) to review changes and select the matching version in [Javadoc](https://javadoc.io/doc/io.github.watermark-lab/WaterMarkIt). Pin the dependency version in your application.
+
+Start integrations through `com.markit.api.WatermarkService`. Implement the documented SPI interfaces when extending processing; review changes to those interfaces when upgrading. Source-tree documentation can include APIs that are not in the dependency version you currently use.
 
 ## Contributing
 
-We welcome contributions from the community! If you'd like to contribute to WaterMarkIt, please read our [Contributing Guide](CONTRIBUTING.md) for details on how to get started, our coding standards, and the pull request process.
+Help make watermarking easier to integrate and more predictable across real documents and media.
 
-Your contributions help make WaterMarkIt better for everyone!
+Browse [good first issues](https://github.com/OlegCheban/WaterMarkIt/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22) or [help wanted](https://github.com/OlegCheban/WaterMarkIt/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22help%20wanted%22). If there is no suitable labeled issue, the [first contribution ideas](CONTRIBUTING.md#choose-a-first-contribution) describe small tasks, where to work, and what a finished contribution should demonstrate.
+
+Useful contributions include runnable examples, documentation, small reproducible media fixtures, regression tests, and processing improvements. Areas to explore include PNG transparency, PDF text preservation, and FFmpeg setup across operating systems.
+
+Read the [contributor guide](CONTRIBUTING.md) for local setup, the package map, tests, and the PR checklist. For a larger feature, open an issue describing the use case and proposed API so its scope can be discussed before implementation.
+
+## Help and feedback
+
+Use [GitHub Issues](https://github.com/OlegCheban/WaterMarkIt/issues) for questions, bug reports, and feature requests. For a processing problem, include the library version, JDK, OS, a minimal code example, expected and actual output, and a small shareable input file. For audio or video, include the FFmpeg version and relevant error output.
+
+Thanks to everyone who contributes code, examples, tests, and feedback. See the [project contributors](https://github.com/OlegCheban/WaterMarkIt/graphs/contributors).
+
+## License
+
+WaterMarkIt is available under the [MIT License](LICENSE).
