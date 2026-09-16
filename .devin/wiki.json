@@ -1,0 +1,303 @@
+{
+  "repo_notes": [
+    {
+      "content": ""
+    }
+  ],
+  "pages": [
+    {
+      "title": "Overview",
+      "purpose": "Introduce WaterMarkIt library, its purpose as a lightweight Java watermarking solution for PDFs, images, and videos, and high-level capabilities",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Getting Started",
+      "purpose": "Quick start guide showing basic usage examples for watermarking PDFs, images, and videos with minimal configuration",
+      "parent": "Overview",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Installation",
+      "purpose": "Instructions for adding WaterMarkIt to Maven and Gradle projects, including version information and dependency management",
+      "parent": "Overview",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Core Concepts",
+      "purpose": "Explain fundamental concepts including the fluent DSL, WatermarkAttributes, file format selection, and watermarking methods",
+      "parent": "Overview",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Architecture",
+      "purpose": "Overview of WaterMarkIt's internal architecture including layering, design patterns, and major subsystems",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "API Layer and Entry Points",
+      "purpose": "Document the WatermarkService interface, FileFormatSelector, and how clients interact with the library",
+      "parent": "Architecture",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Builder Pattern",
+      "purpose": "Explain the fluent builder API pattern used for configuring watermarks, including method chaining and the .and()/.end() pattern",
+      "parent": "Architecture",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "WatermarkAttributes Data Structure",
+      "purpose": "Detailed documentation of the WatermarkAttributes class, its properties, and virtual attributes for text/image determination",
+      "parent": "Architecture",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Positioning System",
+      "purpose": "Explain how watermark positioning works, including WatermarkPosition enum, coordinate calculation, and tiled watermarks",
+      "parent": "Architecture",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Service Discovery and Extensibility",
+      "purpose": "Document the ServiceFactory/ServiceLoader mechanism, Prioritizable interface, and how to provide custom implementations",
+      "parent": "Architecture",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "PDF Watermarking",
+      "purpose": "Overview of PDF watermarking capabilities, including both OVERLAY and DRAW methods",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "PDF DRAW Method",
+      "purpose": "Detailed explanation of the DRAW watermarking method, which converts pages to images for permanent watermarks",
+      "parent": "PDF Watermarking",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "PDF OVERLAY Method",
+      "purpose": "Detailed explanation of the OVERLAY watermarking method, which adds watermarks as content stream layers",
+      "parent": "PDF Watermarking",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "PDF Filters and Predicates",
+      "purpose": "Document conditional watermarking with pageFilter, documentFilter, and enableIf predicates for selective PDF watermarking",
+      "parent": "PDF Watermarking",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "PDF Text Watermarks",
+      "purpose": "Explain text watermark implementation for PDFs, including font handling, Cyrillic support, and trademark symbols",
+      "parent": "PDF Watermarking",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "PDF Image Watermarks",
+      "purpose": "Explain image watermark implementation for PDFs, including PDImageXObject handling and image placement",
+      "parent": "PDF Watermarking",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "PDF Implementation Architecture",
+      "purpose": "Deep dive into PDF watermarking architecture, including DefaultWatermarkPdfService orchestration and painter interfaces",
+      "parent": "PDF Watermarking",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Image Watermarking",
+      "purpose": "Overview of image watermarking capabilities using Java AWT and BufferedImage",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Image Text Watermarks",
+      "purpose": "Explain text watermark rendering on images using Graphics2D, including font metrics and TextLayout",
+      "parent": "Image Watermarking",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Image-Based Watermarks on Images",
+      "purpose": "Explain image watermark rendering on images, including scaling and opacity handling",
+      "parent": "Image Watermarking",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Image Format Conversion",
+      "purpose": "Document ImageConverter and ImageTypeDetector for converting between BufferedImage, byte arrays, and files",
+      "parent": "Image Watermarking",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Image Implementation Architecture",
+      "purpose": "Deep dive into image watermarking architecture, including DefaultImageWatermarker and painter pattern",
+      "parent": "Image Watermarking",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Video Watermarking",
+      "purpose": "Overview of video watermarking through FFmpeg integration and filter chain construction",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "FFmpeg Integration",
+      "purpose": "Explain how WaterMarkIt integrates with FFmpeg, including CommandExecutor and process management",
+      "parent": "Video Watermarking",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Video Filter Chain Construction",
+      "purpose": "Document FilterChainBuilder and FilterStepBuilder pattern for generating FFmpeg filter graphs",
+      "parent": "Video Watermarking",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Video Text Watermarks",
+      "purpose": "Explain TextFilterStepBuilder and FFmpeg drawtext filter generation for text watermarks on video",
+      "parent": "Video Watermarking",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Video Image Watermarks",
+      "purpose": "Explain OverlayFilterStepBuilder and FFmpeg overlay filter generation for image watermarks on video",
+      "parent": "Video Watermarking",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Video Implementation Architecture",
+      "purpose": "Deep dive into video watermarking architecture, including FFmpegVideoWatermarker and temporary file management",
+      "parent": "Video Watermarking",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Watermark Customization",
+      "purpose": "Guide to customizing watermark appearance and behavior across all file formats",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Visual Properties",
+      "purpose": "Document visual customization options including color, opacity, size, and rotation",
+      "parent": "Watermark Customization",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    }
+  ]
+}
