@@ -76,9 +76,7 @@ public interface WatermarkService {
          * @param fileBytes encoded source audio bytes
          * @return the audio watermark DSL
          */
-        default AudioWatermarkContentStep watermarkAudio(byte[] fileBytes) {
-            return new DefaultWatermarkService().watermarkAudio(fileBytes);
-        }
+        AudioWatermarkContentStep watermarkAudio(byte[] fileBytes);
 
         /**
          * Sets the audio file to receive audible watermarks.
@@ -86,8 +84,6 @@ public interface WatermarkService {
          * @param file source audio file
          * @return the audio watermark DSL
          */
-        default AudioWatermarkContentStep watermarkAudio(File file) {
-            return new DefaultWatermarkService().watermarkAudio(file);
-        }
+        AudioWatermarkContentStep watermarkAudio(File file);
     }
 }
