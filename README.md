@@ -2,7 +2,6 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.watermark-lab/WaterMarkIt)](https://central.sonatype.com/artifact/io.github.watermark-lab/WaterMarkIt)
 [![Javadoc](https://javadoc.io/badge2/io.github.watermark-lab/WaterMarkIt/javadoc.svg)](https://javadoc.io/doc/io.github.watermark-lab/WaterMarkIt)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/OlegCheban/WaterMarkIt)
 [![Maintainability](https://qlty.sh/gh/OlegCheban/projects/WaterMarkIt/maintainability.svg)](https://qlty.sh/gh/OlegCheban/projects/WaterMarkIt)
 [![Code Coverage](https://qlty.sh/gh/OlegCheban/projects/WaterMarkIt/coverage.svg)](https://qlty.sh/gh/OlegCheban/projects/WaterMarkIt)
 [![Java](https://img.shields.io/badge/Java-11%2B-blue)](#requirements-and-installation)
