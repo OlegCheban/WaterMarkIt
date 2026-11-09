@@ -48,7 +48,7 @@
         <jacoco.verson>0.8.15</jacoco.verson>
         <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
         <maven-source-plugin.verson>3.4.0</maven-source-plugin.verson>
-        <dokka-maven-plugin.version>2.2.0</dokka-maven-plugin.version>
+        <dokka-maven-plugin.version>2.3.0</dokka-maven-plugin.version>
     </properties>
 
     <dependencies>
